@@ -30,6 +30,7 @@ model State {
 model City {
   id        Int      @id @default(autoincrement())
   city_name String   @unique @db.VarChar(64)
+  ibge_code String   @db.VarChar(7)
   state_id  Int
   state     State    @relation(fields: [state_id], references: [id], onDelete: Cascade)
   farmes    Farmer[]
