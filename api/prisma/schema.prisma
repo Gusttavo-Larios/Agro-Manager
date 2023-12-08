@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Administrator {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique @db.VarChar(96)
+  name     String   @db.VarChar(96)
+  password String   @db.VarChar(96)
+  Farmer   Farmer[]
+}
+
+model State {
+  id         Int      @id @default(autoincrement())
+  state_name String   @unique @db.VarChar(64)
+  acronym    String   @unique @db.VarChar(2)
+  citys      City[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model City {
+  id        Int      @id @default(autoincrement())
+  city_name String   @unique @db.VarChar(64)
+  state_id  Int
+  state     State    @relation(fields: [state_id], references: [id], onDelete: Cascade)
+  farmes    Farmer[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Farmer {
+  id                     Int           @id @default(autoincrement())
+  corporate_name         String        @unique @db.VarChar(96)
+  fantasy_name           String        @unique @db.VarChar(96)
+  company_identification String        @unique @db.VarChar(18)
+  phone_number           String        @db.VarChar(16)
+  city_id                Int
+  city                   City          @relation(fields: [city_id], references: [id])
+  created_by             Int
+  created                Administrator @relation(fields: [created_by], references: [id])
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+}

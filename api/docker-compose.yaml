@@ -5,26 +5,28 @@ services:
   db:
     image: mysql
     container_name: agro_manager_db
-    # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
-    # (this is just an example, not intended to be a production configuration)
-    # command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: mysql
+      MYSQL_DATABASE: agromanager
       MYSQL_PASSWORD: root
+    networks:
+      - agromanager
     ports:
       - 3306:3306
 
   api:
     image: api
     container_name: agro_manager_api
+    env_file:
+      - .env
     restart: unless-stopped
     working_dir: /var/www/api
     volumes:
       - ./:/var/www/api
     depends_on: 
       - db
+    # command: sh -c "npx prisma migrate dev && npx prisma db seed"
     networks:
       - agromanager
     ports:

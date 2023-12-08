@@ -1,0 +1,60 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: mysql
+    container_name: agro_manager_db
+    # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
+    # (this is just an example, not intended to be a production configuration)
+    # command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: agromanager
+      MYSQL_PASSWORD: root
+    networks:
+      agromanager:
+        ipv4_address: 172.28.5.10
+    ports:
+      - 3306:3306
+
+  api:
+    image: api
+    container_name: agro_manager_api
+    command: sh -c "npx prisma migrate dev && npx prisma db seed"
+    # environment:
+    #   - DATBASE_URL=${DATABASE_URL}
+    env_file:
+      - .env
+    # restart: unless-stopped
+    restart: no
+    working_dir: /var/www/api
+    volumes:
+      - ./:/var/www/api
+    depends_on:
+      - db
+    networks:
+      agromanager:
+        ipv4_address: 172.28.5.20
+    ports:
+      - 3000:3000
+
+networks:
+  agromanager:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.5.0/24
+          gateway: 172.28.5.254
+    #     version: '3'
+    # services:
+    #   your-service:
+    # networks:
+    #   your-network:
+    #     ipv4_address: 172.16.238.10
+    # networks:
+    #   your-network:
+    #     ipam:
+    #       config:
+    #         - subnet: 172.16.238.0/24
