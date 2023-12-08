@@ -6,12 +6,15 @@ import { AdministratorsService } from './administrators/administrators.service';
 import { AdministratorsModule } from './administrators/administrators.module';
 import { PrismaService } from './prisma.service';
 import { StateModule } from './state/state.module';
+import { CityModule } from './city/city.module';
 
 @Module({
   imports: [
     AuthModule,
     AdministratorsModule,
-    StateModule],
+    StateModule,
+    CityModule
+  ],
   controllers: [AppController],
   providers: [PrismaService, AppService, AdministratorsService],
 })
