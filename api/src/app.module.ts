@@ -4,13 +4,14 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { AdministratorsService } from './administrators/administrators.service';
 import { AdministratorsModule } from './administrators/administrators.module';
-import { AdministratorsRepository } from './administrators/administrator.repository';
 import { PrismaService } from './prisma.service';
+import { StateModule } from './state/state.module';
 
 @Module({
   imports: [
     AuthModule,
-    AdministratorsModule],
+    AdministratorsModule,
+    StateModule],
   controllers: [AppController],
   providers: [PrismaService, AppService, AdministratorsService],
 })
