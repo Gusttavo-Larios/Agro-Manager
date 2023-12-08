@@ -30,7 +30,7 @@ model State {
 model City {
   id        Int      @id @default(autoincrement())
   city_name String   @unique @db.VarChar(64)
-  ibge_code String   @db.VarChar(7)
+  ibge_code String   @unique @db.VarChar(7)
   state_id  Int
   state     State    @relation(fields: [state_id], references: [id], onDelete: Cascade)
   farmes    Farmer[]
@@ -47,7 +47,7 @@ model Farmer {
   city_id                Int
   city                   City          @relation(fields: [city_id], references: [id])
   created_by             Int
-  created                Administrator @relation(fields: [created_by], references: [id])
+  createdBy              Administrator @relation(fields: [created_by], references: [id])
   createdAt              DateTime      @default(now())
   updatedAt              DateTime      @updatedAt
 }
