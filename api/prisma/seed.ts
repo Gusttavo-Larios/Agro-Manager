@@ -9,7 +9,7 @@ async function main() {
     await prisma.state.deleteMany()
     await prisma.farmer.deleteMany()
 
-    const encryptedPassword = await bcrypt.hash('12345', 10);
+    const encryptedPassword = await bcrypt.hash('12345678', 10);
     const administrator = await prisma.administrator.create({
         data:
         {
@@ -24,6 +24,15 @@ async function main() {
         {
             name: "Marco",
             email: "marco.antonio@attosementes.com.br",
+            password: encryptedPassword
+        }
+    })
+
+    await prisma.administrator.create({
+        data:
+        {
+            name: "Teste",
+            email: "teste.exemplo@email.com.br",
             password: encryptedPassword
         }
     })
