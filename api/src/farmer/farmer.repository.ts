@@ -1,10 +1,10 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
+import { Prisma } from "@prisma/client";
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 
 import { PrismaService } from "src/prisma.service";
 import { CreateFarmerDto } from "./dto/create-farmer.dto";
-import { Farmer } from "./entities/farmer.entity";
-import { Prisma } from "@prisma/client";
 import { UpdateFarmerDto } from "./dto/update-farmer.dto";
+import { Farmer } from "./entities/farmer.entity";
 
 @Injectable()
 export class FarmerRepository {
@@ -119,6 +119,23 @@ export class FarmerRepository {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 throw new BadRequestException(error.message)
             }
+            throw new InternalServerErrorException(error.message)
+        }
+    }
+
+
+    async remove(id: number): Promise<Farmer | null> {
+        try {
+            return await this.prisma.farmer.delete({
+                where: {
+                    id
+                }
+            })
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                throw new NotFoundException('Agricultor não encontrado.')
+            }
+
             throw new InternalServerErrorException(error.message)
         }
     }

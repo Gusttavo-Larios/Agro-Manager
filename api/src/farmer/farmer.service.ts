@@ -36,7 +36,7 @@ export class FarmerService {
     return this.repository.update(id, updateFarmerDto)
   }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} farmer`;
-  // }
+  remove(id: number) {
+    return this.repository.remove(id)
+  }
 }

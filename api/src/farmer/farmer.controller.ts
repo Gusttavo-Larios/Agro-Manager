@@ -27,8 +27,8 @@ export class FarmerController {
     return this.farmerService.update(Number(id), updateFarmerDto);
   }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.farmerService.remove(+id);
-  // }
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.farmerService.remove(+id);
+  }
 }
