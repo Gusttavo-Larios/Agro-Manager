@@ -13,8 +13,8 @@ export class AuthService {
     async signIn(email: string, pass: string): Promise<any> {
         const user = await this.administratorRepository.findOne(email);
 
-        if (!bcrypt.compare(pass, user?.password)) {
-            throw new UnauthorizedException();
+        if (!user || !bcrypt.compare(pass, user?.password)) {
+            throw new UnauthorizedException('Usuário ou senha está incorreto.');
         }
 
         const payload = {sub: user.id, email: user.email}
