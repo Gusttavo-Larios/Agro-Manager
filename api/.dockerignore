@@ -4,3 +4,4 @@
 .prettierrc
 .eslintrc.js
 README.MD
+.env
