@@ -42,7 +42,7 @@ export class FarmerRepository {
                 }
             })
         } catch (error) {
-            if(error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 throw new BadRequestException(error.message)
             }
             throw new InternalServerErrorException(error.message)
@@ -59,6 +59,13 @@ export class FarmerRepository {
             take: 10,
             orderBy: {
                 id: 'asc'
+            },
+            include: {
+                city: {
+                    include: {
+                        state: true
+                    }
+                }
             }
         })
     }
@@ -68,6 +75,13 @@ export class FarmerRepository {
         return await this.prisma.farmer.findUnique({
             where: {
                 id
+            },
+            include: {
+                city: {
+                    include: {
+                        state: true
+                    }
+                }
             }
         })
     }
@@ -102,7 +116,7 @@ export class FarmerRepository {
                 }
             })
         } catch (error) {
-            if(error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 throw new BadRequestException(error.message)
             }
             throw new InternalServerErrorException(error.message)
