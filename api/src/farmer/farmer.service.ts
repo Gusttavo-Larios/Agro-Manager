@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { CreateFarmerDto } from './dto/create-farmer.dto';
 import { FarmerRepository } from './farmer.repository';
+import { UpdateFarmerDto } from './dto/update-farmer.dto';
 
 @Injectable()
 export class FarmerService {
@@ -31,9 +32,9 @@ export class FarmerService {
     return farmer
   }
 
-  // update(id: number, updateFarmerDto: UpdateFarmerDto) {
-  //   return `This action updates a #${id} farmer`;
-  // }
+  update(id: number, updateFarmerDto: UpdateFarmerDto) {
+    return this.repository.update(id, updateFarmerDto)
+  }
 
   // remove(id: number) {
   //   return `This action removes a #${id} farmer`;

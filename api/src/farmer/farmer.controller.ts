@@ -22,10 +22,10 @@ export class FarmerController {
     return this.farmerService.findOne(Number(id));
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateFarmerDto: UpdateFarmerDto) {
-  //   return this.farmerService.update(+id, updateFarmerDto);
-  // }
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateFarmerDto: UpdateFarmerDto) {
+    return this.farmerService.update(Number(id), updateFarmerDto);
+  }
 
   // @Delete(':id')
   // remove(@Param('id') id: string) {
