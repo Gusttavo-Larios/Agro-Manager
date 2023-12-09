@@ -1,13 +1,15 @@
+import { Injectable } from "@nestjs/common";
+
 import { PrismaService } from "src/prisma.service";
 import { CreateFarmerDto } from "./dto/create-farmer.dto";
-import { Injectable } from "@nestjs/common";
+import { Farmer } from "./entities/farmer.entity";
 
 @Injectable()
 export class FarmerRepository {
     constructor(private prisma: PrismaService) { }
 
-    async create(createFarmerDto: CreateFarmerDto) {
-       return await this.prisma.farmer.create({
+    async create(createFarmerDto: CreateFarmerDto): Promise<Farmer> {
+        return await this.prisma.farmer.create({
             data: {
                 corporate_name: createFarmerDto.corporate_name,
                 fantasy_name: createFarmerDto.fantasy_name,
@@ -38,4 +40,26 @@ export class FarmerRepository {
         })
     }
 
+    async findAll(page?: number): Promise<Farmer[]> {
+        let numberOfIgnoredItems = 0;
+
+        if (page > 1) numberOfIgnoredItems = 10 * (page - 1)
+
+        return await this.prisma.farmer.findMany({
+            skip: numberOfIgnoredItems,
+            take: 10,
+            orderBy: {
+                id: 'asc'
+            }
+        })
+    }
+
+
+    async findOne(id: number): Promise<Farmer | null> {
+        return await this.prisma.farmer.findUnique({
+            where: {
+                id
+            }
+        })
+    }
 }

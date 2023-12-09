@@ -45,9 +45,9 @@ model Farmer {
   company_identification String        @unique @db.VarChar(18)
   phone_number           String        @db.VarChar(16)
   city_id                Int
-  city                   City          @relation(fields: [city_id], references: [id])
+  city                   City          @relation(fields: [city_id], references: [id], onDelete: Cascade)
   created_by             Int
-  createdBy              Administrator @relation(fields: [created_by], references: [id])
+  createdBy              Administrator @relation(fields: [created_by], references: [id], onDelete: Cascade)
   createdAt              DateTime      @default(now())
   updatedAt              DateTime      @updatedAt
 }

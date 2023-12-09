@@ -1,23 +1,35 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+
 import { CreateFarmerDto } from './dto/create-farmer.dto';
-import { UpdateFarmerDto } from './dto/update-farmer.dto';
 import { FarmerRepository } from './farmer.repository';
 
 @Injectable()
 export class FarmerService {
-  constructor(private repository: FarmerRepository) {}
+  constructor(private repository: FarmerRepository) { }
 
   create(createFarmerDto: CreateFarmerDto) {
     return this.repository.create(createFarmerDto)
   }
 
-  // findAll() {
-  //   return `This action returns all farmer`;
-  // }
+  async findAll(page?: number) {
+    const farmers = await this.repository.findAll(page);
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} farmer`;
-  // }
+    if (!farmers.length) {
+      throw new NotFoundException('Não existem agricultores nesta página.')
+    }
+
+    return farmers
+  }
+
+  async findOne(id: number) {
+    const farmer = await this.repository.findOne(id);
+
+    if (farmer === null) {
+      throw new NotFoundException('Agricultor não encontrado.')
+    }
+
+    return farmer
+  }
 
   // update(id: number, updateFarmerDto: UpdateFarmerDto) {
   //   return `This action updates a #${id} farmer`;

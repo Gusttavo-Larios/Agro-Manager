@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query } from '@nestjs/common';
 import { FarmerService } from './farmer.service';
 import { CreateFarmerDto } from './dto/create-farmer.dto';
 import { UpdateFarmerDto } from './dto/update-farmer.dto';
@@ -12,15 +12,15 @@ export class FarmerController {
     return this.farmerService.create(createFarmerDto);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.farmerService.findAll();
-  // }
+  @Get()
+  findAll(@Query('page') page: string) {
+    return this.farmerService.findAll(Number(page));
+  }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.farmerService.findOne(+id);
-  // }
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.farmerService.findOne(Number(id));
+  }
 
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateFarmerDto: UpdateFarmerDto) {
