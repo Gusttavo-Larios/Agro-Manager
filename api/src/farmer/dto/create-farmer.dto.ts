@@ -1,16 +1,29 @@
-import { CreateCityDto } from "src/city/dto/create-city.dto";
-import { IsEmail, IsInstance, IsNotEmpty, IsNumber, IsPhoneNumber, IsPositive, IsString, Matches, MaxLength, ValidateNested } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsPhoneNumber, IsPositive, IsString, Matches, MaxLength, ValidateNested } from 'class-validator';
 import { Type } from "class-transformer";
 
+import { CreateCityDto } from "src/city/dto/create-city.dto";
+
 export class CreateFarmerDto {
-    @IsString()
-    @IsNotEmpty()
-    @MaxLength(96)
+    @IsString({
+        message: "O nome social da empresa dever ser uma cadeia de caracteres."
+    })
+    @IsNotEmpty({
+        message: "O nome social da empresa é requerido."
+    })
+    @MaxLength(96, {
+        message: "O nome social da empresa deve ter no máximo 96 caracteres."
+    })
     corporate_name: string;
 
-    @IsString()
-    @IsNotEmpty()
-    @MaxLength(96)
+    @IsString({
+        message: "O nome fantasia da empresa dever ser uma cadeia de caracteres."
+    })
+    @IsNotEmpty({
+        message: "O nome fantasia da empresa é requerido."
+    })
+    @MaxLength(96, {
+        message: "O nome fantasia da empresa deve ter no máximo 96 caracteres."
+    })
     fantasy_name: string;
 
     @IsString()
