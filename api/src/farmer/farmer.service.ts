@@ -15,7 +15,7 @@ export class FarmerService {
   async findAll(page?: number) {
     const farmers = await this.repository.findAll(page);
 
-    if (!farmers.length) {
+    if (!farmers.data.length) {
       throw new NotFoundException('Não existem agricultores nesta página.')
     }
 
