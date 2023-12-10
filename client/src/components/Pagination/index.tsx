@@ -2,16 +2,16 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { Button, HStack } from "@chakra-ui/react";
 
 type IProps = {
-  currentPage: number;
-  totalPages: number;
+  currentPage?: number;
+  totalPages?: number;
   numberOfVisiblePages?: number;
   changePage: (page: number) => void;
 };
 
 export function Pagination({
-  currentPage,
+  currentPage = 1,
   numberOfVisiblePages = 3,
-  totalPages,
+  totalPages = 1,
   changePage,
 }: IProps): JSX.Element {
   let pages: number[] = [];
@@ -75,6 +75,7 @@ export function Pagination({
           borderStyle="solid"
           _hover={{ bg: "gray.400" }}
           onClick={() => changePage(item)}
+          isDisabled={item === currentPage}
         >
           {item}
         </Button>

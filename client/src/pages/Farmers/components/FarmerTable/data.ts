@@ -1,9 +1,11 @@
-export const listTableTh = [
+const headers = [
   "Razão Social",
   "Nome Fantasia",
   "CPF/CNPJ",
   "Celular",
   "Cidade",
   "Estado",
-  "Ações"
+  "Ações",
 ];
+
+export { headers };

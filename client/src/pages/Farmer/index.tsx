@@ -4,28 +4,20 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
-  HStack,
   Heading,
-  Image,
   Input,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   Select,
   Stack,
   Text,
-  VStack,
 } from "@chakra-ui/react";
-import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import { CreateOrUpdateFarmerSchema } from "./schema";
 import { useLogic } from "./logic";
-
-import IconSmall from "@/assets/imgs/ICON_SMALL.svg";
 import { FarmerFormType } from "./type";
+
+import { Body } from "@/components/Body";
 
 export function Farmer(): JSX.Element {
   const { getFormInitialValues, getCities, update, states, cities } =
@@ -52,24 +44,7 @@ export function Farmer(): JSX.Element {
   });
 
   return (
-    <VStack spacing="1rem" px="1rem" py="2rem">
-      <HStack
-        pb="1rem"
-        w="100%"
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <Image src={IconSmall} />
-        <Menu>
-          <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-            Menu
-          </MenuButton>
-          <MenuList>
-            <MenuItem>Sair</MenuItem>
-          </MenuList>
-        </Menu>
-      </HStack>
-
+    <Body>
       <Stack mb="1rem">
         <Heading>Cadastro de Agricultor</Heading>
         <Text>O preenchimento de todos os campos abaixo é obrigatório.</Text>
@@ -162,8 +137,6 @@ export function Farmer(): JSX.Element {
               </FormErrorMessage>
             </FormControl>
 
-            {/** ====================== */}
-
             <FormControl isInvalid={errors.cityIgbeCode?.message !== null}>
               <FormLabel htmlFor="cityIgbeCode">Cidade</FormLabel>
               <Select
@@ -195,6 +168,6 @@ export function Farmer(): JSX.Element {
           </Button>
         </Stack>
       </form>
-    </VStack>
+    </Body>
   );
 }

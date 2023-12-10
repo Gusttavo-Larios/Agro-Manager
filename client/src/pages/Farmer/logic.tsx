@@ -67,8 +67,6 @@ export function useLogic() {
   };
 
   async function update(data: FarmerFormType) {
-    console.log(data);
-
     const cityName: string = cities.find(
       (city) => city.codigo_ibge === data.cityIgbeCode
     )?.nome as string;
