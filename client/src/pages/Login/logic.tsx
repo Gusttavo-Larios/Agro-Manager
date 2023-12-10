@@ -1,3 +1,4 @@
+import { router } from "@/router";
 import { AdministratorEndpoint } from "@/service/administrator.endpoint";
 import { useToast } from "@chakra-ui/react";
 import { AxiosError } from "axios";
@@ -5,11 +6,11 @@ import { AxiosError } from "axios";
 export function useLogic() {
   const toast = useToast();
 
-  async function signUp(email: string, password: string) {
+  async function signIn(email: string, password: string) {
     try {
       const response = await AdministratorEndpoint.signIn(email, password);
       sessionStorage.setItem("@userToken", response.access_token);
-      console.log("OK!");
+      router.navigate('/agricultores')
     } catch (error: any) {
       let errorMessage = error.message;
 
@@ -29,6 +30,6 @@ export function useLogic() {
   }
 
   return {
-    signUp,
+    signIn,
   };
 }

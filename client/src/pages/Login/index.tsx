@@ -32,7 +32,7 @@ export function Login(): JSX.Element {
   const logic = useLogic();
 
   const onSubmit = handleSubmit(async (data) => {
-    await logic.signUp(data.email, data.password);
+    await logic.signIn(data.email, data.password);
   });
 
   return (
