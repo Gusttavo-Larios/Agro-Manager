@@ -12,20 +12,16 @@ export class CreateCityDto {
     })
     city_name: string;
 
-    @IsNumber({
-        maxDecimalPlaces: 0
-    }, {
-        message: "A referência ao estado deve ser um número inteiro."
+    @IsString({
+        message: "A sigla do estado deve ser uma cadeia de caracteres."
     })
-    @IsPositive(
-        {
-            message: "A referência ao estado deve ser um número positivo."
-        }
-    )
+    @Length(2, 2, {
+        message: "A sigla do estado deve ter 2 caracteres."
+    })
     @IsNotEmpty({
-        message: "O id do estado é requerido."
+        message: "O estado é requerido."
     })
-    state_id: number;
+    state_acronym: string;
 
     @IsString()
     @IsNotEmpty({

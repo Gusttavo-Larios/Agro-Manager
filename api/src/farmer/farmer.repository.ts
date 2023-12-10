@@ -33,7 +33,7 @@ export class FarmerRepository {
                 ibge_code: createFarmerDto.city.ibge_code,
                 state: {
                   connect: {
-                    id: createFarmerDto.city.state_id,
+                    acronym: createFarmerDto.city.state_acronym,
                   },
                 },
               },
@@ -123,7 +123,7 @@ export class FarmerRepository {
                 ibge_code: updateFarmerDto.city.ibge_code,
                 state: {
                   connect: {
-                    id: updateFarmerDto.city.state_id,
+                    acronym: updateFarmerDto.city.state_acronym,
                   },
                 },
               },

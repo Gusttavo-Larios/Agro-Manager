@@ -23,6 +23,7 @@ import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useLogic } from "./logic";
 import { listTableTh } from "./data";
 import { Pagination } from "@/components/Pagination";
+import { router } from "@/router";
 
 export function Farmers() {
   const logic = useLogic();
@@ -79,7 +80,25 @@ export function Farmers() {
                   <Td>{item.city?.city_name}</Td>
                   <Td>{item.city?.state?.state_name}</Td>
                   <Td>
-                    <Button colorScheme="green">Editar</Button>
+                    <Menu>
+                      <MenuButton
+                        colorScheme="teal"
+                        as={Button}
+                        rightIcon={<ChevronDownIcon />}
+                      >
+                        Cadastro
+                      </MenuButton>
+                      <MenuList>
+                        <MenuItem
+                          onClick={() =>
+                            router.navigate(`/agricultores/${item.id}`)
+                          }
+                        >
+                          Editar
+                        </MenuItem>
+                        <MenuItem>Excluir</MenuItem>
+                      </MenuList>
+                    </Menu>
                   </Td>
                 </Tr>
               ))}

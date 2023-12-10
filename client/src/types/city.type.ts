@@ -9,3 +9,8 @@ export type CityType = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type CityServiceType = {
+  nome: string;
+  codigo_ibge: string;
+};

@@ -56,8 +56,8 @@ export function Login(): JSX.Element {
               </FormErrorMessage>
             </FormControl>
 
-            <FormControl isInvalid={errors.email?.message !== null}>
-              <FormLabel htmlFor="email">Senha</FormLabel>
+            <FormControl isInvalid={errors.password?.message !== null}>
+              <FormLabel htmlFor="password">Senha</FormLabel>
               <Input
                 id="password"
                 type="password"
