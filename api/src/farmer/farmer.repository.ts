@@ -1,9 +1,7 @@
 import { Prisma } from '@prisma/client';
 import {
-  BadRequestException,
   Injectable,
   InternalServerErrorException,
-  NotFoundException,
 } from '@nestjs/common';
 
 import { PrismaService } from 'src/prisma.service';
@@ -48,7 +46,7 @@ export class FarmerRepository {
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new BadRequestException(error.message);
+        this.prisma.handlePrismaError(error);
       }
       throw new InternalServerErrorException(error.message);
     }
@@ -59,47 +57,61 @@ export class FarmerRepository {
     currentPage: number;
     totalPages: number;
   }> {
-    let numberOfIgnoredItems = 0;
+    try {
+      let numberOfIgnoredItems = 0;
 
-    if (page > 1) numberOfIgnoredItems = 10 * (page - 1);
+      if (page > 1) numberOfIgnoredItems = 10 * (page - 1);
 
-    const response = await this.prisma.farmer.findMany({
-      skip: numberOfIgnoredItems,
-      take: 10,
-      orderBy: {
-        id: 'asc',
-      },
-      include: {
-        city: {
-          include: {
-            state: true,
+      const response = await this.prisma.farmer.findMany({
+        skip: numberOfIgnoredItems,
+        take: 10,
+        orderBy: {
+          id: 'asc',
+        },
+        include: {
+          city: {
+            include: {
+              state: true,
+            },
           },
         },
-      },
-    });
+      });
 
-    const totalPages = await this.prisma.farmer.count();
+      const totalPages = await this.prisma.farmer.count();
 
-    return {
-      data: response,
-      currentPage: page || 1,
-      totalPages: Math.floor(totalPages / 10),
-    };
+      return {
+        data: response,
+        currentPage: page || 1,
+        totalPages: Math.ceil(totalPages / 10),
+      };
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        this.prisma.handlePrismaError(error);
+      }
+      throw new InternalServerErrorException(error.message);
+    }
   }
 
   async findOne(id: number): Promise<Farmer | null> {
-    return await this.prisma.farmer.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        city: {
-          include: {
-            state: true,
+    try {
+      return await this.prisma.farmer.findUnique({
+        where: {
+          id,
+        },
+        include: {
+          city: {
+            include: {
+              state: true,
+            },
           },
         },
-      },
-    });
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        this.prisma.handlePrismaError(error);
+      }
+      throw new InternalServerErrorException(error.message);
+    }
   }
 
   async update(id: number, updateFarmerDto: UpdateFarmerDto): Promise<Farmer> {
@@ -133,7 +145,7 @@ export class FarmerRepository {
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new BadRequestException(error.message);
+        this.prisma.handlePrismaError(error);
       }
       throw new InternalServerErrorException(error.message);
     }
@@ -148,9 +160,8 @@ export class FarmerRepository {
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new NotFoundException('Agricultor não encontrado.');
+        this.prisma.handlePrismaError(error);
       }
-
       throw new InternalServerErrorException(error.message);
     }
   }
