@@ -21,7 +21,7 @@ import { useToast } from "@chakra-ui/react";
 import { AxiosError } from "axios";
 
 type ContextType = {
-  FORM_MODE: keyof typeof FarmerScreenMode ;
+  FORM_MODE: keyof typeof FarmerScreenMode;
   getFormInitialValues: () => Promise<FarmerFormType>;
   getCities: (state: string) => Promise<void>;
   submit: (data: FarmerFormType) => Promise<void>;
@@ -38,7 +38,6 @@ export function FarmerContextProvider({ children }: { children: ReactNode }) {
   const toast = useToast();
 
   const FORM_MODE = location.state?.type ?? "CREATE";
-  //   console.log(location.state)
 
   const [states, setStates] = useState<StateType[] | []>([]);
   const [cities, setCities] = useState<CityServiceType[] | []>([]);
@@ -114,23 +113,52 @@ export function FarmerContextProvider({ children }: { children: ReactNode }) {
   };
 
   async function update(data: FarmerFormType) {
-    const cityName: string = cities.find(
-      (city) => city.codigo_ibge === data.cityIgbeCode
-    )?.nome as string;
+    try {
+      const cityName: string = cities.find(
+        (city) => city.codigo_ibge === data.cityIgbeCode
+      )?.nome as string;
 
-    const updatedRecord = {
-      corporate_name: data.corporateName,
-      fantasy_name: data.fantasyName,
-      company_identification: data.companyIdentification,
-      phone_number: data.phoneNumber,
-      city: {
-        city_name: cityName,
-        state_acronym: data.stateAcronym,
-        ibge_code: data.cityIgbeCode,
-      },
-    };
+      const updatedRecord = {
+        corporate_name: data.corporateName,
+        fantasy_name: data.fantasyName,
+        company_identification: data.companyIdentification,
+        phone_number: data.phoneNumber,
+        city: {
+          city_name: cityName,
+          state_acronym: data.stateAcronym,
+          ibge_code: data.cityIgbeCode,
+        },
+      };
 
-    FarmerEndpoint.update(Number(params.farmerId), updatedRecord);
+      await FarmerEndpoint.update(Number(params.farmerId), updatedRecord);
+
+      toast({
+        title: "Agricultor atualizado com sucesso",
+        description:
+          "Agora você já pode ver o cadastro atualizado na listagem de agricultores",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+        position: "top-right",
+      });
+
+      router.navigate("/agricultores");
+    } catch (error: any) {
+      let errorMessage = error.message;
+
+      if (error instanceof AxiosError) {
+        errorMessage = error.response?.data.message;
+      }
+
+      toast({
+        title: "Não foi possível atualizar o cadastro",
+        description: errorMessage,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+        position: "top-right",
+      });
+    }
   }
 
   async function create(data: FarmerFormType) {
