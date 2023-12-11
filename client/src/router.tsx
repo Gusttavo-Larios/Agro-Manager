@@ -12,11 +12,13 @@ export const router = createBrowserRouter([
   {
     path: "/agricultores",
     element: <Farmers />,
-    // children: [
-    // ],
   },
   {
-    path: "/agricultores/:farmerId",
+    path: "/agricultor/:farmerId",
+    element: <Farmer />,
+  },
+  {
+    path: "/agricultor/novo",
     element: <Farmer />,
   },
 ]);

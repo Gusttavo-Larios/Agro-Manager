@@ -19,6 +19,7 @@ import { FarmerContextProvider, useFarmerContext } from "./context";
 import { CreateOrUpdateFarmerSchema } from "./schema";
 import { FarmerFormType } from "./type";
 import { FarmerHelper } from "./helper";
+import { FarmerScreenMode } from "@/enums/farmer.enum";
 
 export function Farmer(): JSX.Element {
   return (
@@ -54,7 +55,8 @@ const fields: Array<FieldType> = [
 
 function Form() {
   const { states, cities } = useFarmerContext();
-  const { getFormInitialValues, getCities, update } = useFarmerContext();
+  const { FORM_MODE, getFormInitialValues, getCities, submit } =
+    useFarmerContext();
 
   const {
     register,
@@ -73,7 +75,7 @@ function Form() {
   }, [stateFielCurrentValue]);
 
   const onSubmit = handleSubmit(async (data) => {
-    await update(data);
+    await submit(data);
   });
 
   return (
@@ -131,12 +133,14 @@ function Form() {
           </FormControl>
         </Stack>
         <Button
-          colorScheme="blue"
+          colorScheme={FORM_MODE === FarmerScreenMode.CREATE ? "green" : "blue"}
           width="sm"
           type="submit"
           isDisabled={!isValid}
         >
-          Atualizar
+          {FORM_MODE === FarmerScreenMode.CREATE
+            ? "Criar Agricultor"
+            : "Atualizar Agricultor"}
         </Button>
       </Stack>
     </form>

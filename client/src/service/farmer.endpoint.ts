@@ -7,7 +7,7 @@ export type FarmerGetAllReturnType = {
   totalPages: number;
 };
 
-type FarmerUpdateForm = {
+type FarmerCreateForm = {
   corporate_name: string;
   fantasy_name: string;
   company_identification: string;
@@ -17,7 +17,10 @@ type FarmerUpdateForm = {
     state_acronym: string;
     ibge_code: string;
   };
+  // created_by: number;
 };
+
+type FarmerUpdateForm = Omit<FarmerCreateForm, "created_by">;
 
 export class FarmerEndpoint {
   static async getAll(page?: number): Promise<FarmerGetAllReturnType> {
@@ -38,6 +41,12 @@ export class FarmerEndpoint {
 
   static async update(id: number, data: FarmerUpdateForm): Promise<FarmerType> {
     const response = await api.patch(`farmer/${id}`, data);
+
+    return response.data;
+  }
+
+  static async create(data: FarmerCreateForm): Promise<FarmerType> {
+    const response = await api.post(`farmer`, data);
 
     return response.data;
   }

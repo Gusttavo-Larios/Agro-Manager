@@ -14,18 +14,18 @@ import {
   TableContainer,
   Text,
   Image,
-  Center,
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 
-import { Pagination } from "@/components/Pagination";
 import { FarmerType } from "@/types/farmer.type";
+import { FarmerScreenMode } from "@/enums/farmer.enum";
 import { NavigateUtil } from "@/utils/navigate.util";
+
+import { Pagination } from "@/components/Pagination";
+import NotFoundFarmersImage from "@/assets/imgs/NOT_FOUND_FARMERS.svg";
 
 import { useFarmerContext } from "../../context";
 import { headers } from "./data";
-
-import NotFoundFarmersImage from "@/assets/imgs/NOT_FOUND_FARMERS.svg";
 
 export function FarmerTable() {
   const { data } = useFarmerContext();
@@ -110,7 +110,9 @@ function TableRow(farmer: FarmerType) {
           <MenuList>
             <MenuItem
               onClick={() =>
-                NavigateUtil.navigateTo(`/agricultores/${farmer.id}`)
+                NavigateUtil.navigateTo(`/agricultor/${farmer.id}`, {
+                  type: FarmerScreenMode.UPDATE,
+                })
               }
             >
               Editar
