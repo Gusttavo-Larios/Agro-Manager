@@ -1,4 +1,3 @@
-import React from "react";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -7,36 +6,19 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Button,
-  useDisclosure,
 } from "@chakra-ui/react";
-import { useFarmerContext } from "../../context";
+
+import { useAlertDialogDeleteFarmerContext } from "./context";
 
 export function AlertConfirmDelete() {
-  const {
-    deleteFarmerProps: { data, confirmDeleteFarmer, cancelDeleteFarmer },
-  } = useFarmerContext();
-
-  const cancelRef = React.useRef();
-
-  const { isOpen, onClose } = useDisclosure({
-    isOpen: data.isOpen,
-  });
-
-  function confirm() {
-    confirmDeleteFarmer();
-    onClose();
-  }
-
-  function close() {
-    cancelDeleteFarmer();
-    onClose();
-  }
+  const { cancelRef, closeAlert, isOpen, farmer, deleteFarmer } =
+    useAlertDialogDeleteFarmerContext();
 
   return (
     <AlertDialog
       isOpen={isOpen}
       leastDestructiveRef={cancelRef}
-      onClose={onClose}
+      onClose={closeAlert}
     >
       <AlertDialogOverlay>
         <AlertDialogContent>
@@ -45,15 +27,15 @@ export function AlertConfirmDelete() {
           </AlertDialogHeader>
 
           <AlertDialogBody>
-            Tem certeza que dezeja excluir o(a) {data.fantasyName}? Você não
+            Tem certeza que dezeja excluir o(a) {farmer?.fantasy_name}? Você não
             pode desfazer esta ação posteriormente.
           </AlertDialogBody>
 
           <AlertDialogFooter>
-            <Button ref={cancelRef} onClick={confirm}>
+            <Button ref={cancelRef} onClick={deleteFarmer}>
               Excluir
             </Button>
-            <Button colorScheme="red" onClick={close} ml={3}>
+            <Button colorScheme="red" onClick={closeAlert} ml={3}>
               Cancelar
             </Button>
           </AlertDialogFooter>

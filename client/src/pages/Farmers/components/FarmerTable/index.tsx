@@ -24,6 +24,7 @@ import { NavigateUtil } from "@/utils/navigate.util";
 import { Pagination } from "@/components/Pagination";
 import NotFoundFarmersImage from "@/assets/imgs/NOT_FOUND_FARMERS.svg";
 
+import { useAlertDialogDeleteFarmerContext } from "../AlertConfirmDelete/context";
 import { useFarmerContext } from "../../context";
 import { headers } from "./data";
 
@@ -90,9 +91,7 @@ function TableRows() {
 }
 
 function TableRow(farmer: FarmerType) {
-  const {
-    deleteFarmerProps: { requestDeleteFarmer },
-  } = useFarmerContext();
+  const { openAlert } = useAlertDialogDeleteFarmerContext();
   return (
     <Tr>
       <Td>{farmer.corporate_name}</Td>
@@ -120,12 +119,7 @@ function TableRow(farmer: FarmerType) {
             >
               Editar
             </MenuItem>
-            <MenuItem onClick={() => requestDeleteFarmer(farmer.id)}>
-              Excluir
-            </MenuItem>
-            {/* <MenuItem>
-              <AlertConfirmDelete />
-            </MenuItem> */}
+            <MenuItem onClick={() => openAlert(farmer.id)}>Excluir</MenuItem>
           </MenuList>
         </Menu>
       </Td>
@@ -133,7 +127,7 @@ function TableRow(farmer: FarmerType) {
   );
 }
 function Footer() {
-  const { data, getFarmes } = useFarmerContext();
+  const { data, onChangePage } = useFarmerContext();
   return (
     <HStack w="full" px="1rem" py="1rem" justifyContent="space-between">
       <Text fontWeight="700">
@@ -143,7 +137,7 @@ function Footer() {
       <Pagination
         currentPage={data?.currentPage}
         totalPages={data?.totalPages}
-        changePage={getFarmes}
+        changePage={onChangePage}
       />
     </HStack>
   );
