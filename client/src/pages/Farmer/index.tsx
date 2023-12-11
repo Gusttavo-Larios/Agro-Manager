@@ -10,18 +10,51 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { useForm } from "react-hook-form";
+import { FieldErrors, UseFormRegister, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-
-import { CreateOrUpdateFarmerSchema } from "./schema";
-import { useLogic } from "./logic";
-import { FarmerFormType } from "./type";
 
 import { Body } from "@/components/Body";
 
+import { FarmerContextProvider, useFarmerContext } from "./context";
+import { CreateOrUpdateFarmerSchema } from "./schema";
+import { FarmerFormType } from "./type";
+import { FarmerHelper } from "./helper";
+
 export function Farmer(): JSX.Element {
-  const { getFormInitialValues, getCities, update, states, cities } =
-    useLogic();
+  return (
+    <FarmerContextProvider>
+      <Page />
+    </FarmerContextProvider>
+  );
+}
+
+function Page() {
+  return (
+    <Body>
+      <Stack mb="1rem">
+        <Heading>Cadastro de Agricultor</Heading>
+        <Text>O preenchimento de todos os campos abaixo é obrigatório.</Text>
+      </Stack>
+      <Form />
+    </Body>
+  );
+}
+
+type FieldType = {
+  label: string;
+  fieldName: keyof FarmerFormType;
+};
+
+const fields: Array<FieldType> = [
+  { label: "Razão Social", fieldName: "corporateName" },
+  { label: "Nome Fantasia", fieldName: "fantasyName" },
+  { label: "CPF/CNPJ", fieldName: "companyIdentification" },
+  { label: "Celular", fieldName: "phoneNumber" },
+];
+
+function Form() {
+  const { states, cities } = useFarmerContext();
+  const { getFormInitialValues, getCities, update } = useFarmerContext();
 
   const {
     register,
@@ -32,9 +65,9 @@ export function Farmer(): JSX.Element {
     resolver: yupResolver(CreateOrUpdateFarmerSchema),
     defaultValues: getFormInitialValues,
   });
+
   const stateFielCurrentValue = watch("stateAcronym");
 
-  // console.log({city: watch('cityIgbeCode')})
   useEffect(() => {
     if (stateFielCurrentValue) getCities(stateFielCurrentValue);
   }, [stateFielCurrentValue]);
@@ -44,130 +77,101 @@ export function Farmer(): JSX.Element {
   });
 
   return (
-    <Body>
-      <Stack mb="1rem">
-        <Heading>Cadastro de Agricultor</Heading>
-        <Text>O preenchimento de todos os campos abaixo é obrigatório.</Text>
-      </Stack>
-      <form onSubmit={onSubmit}>
-        <Stack spacing="0.8rem">
-          <Stack spacing="0.2rem" width="sm">
-            <FormControl isInvalid={errors.corporateName?.message !== null}>
-              <FormLabel htmlFor="corporateName">Razão Social</FormLabel>
-              <Input
-                id="corporateName"
-                type="text"
-                placeholder="Razão Social"
-                errorBorderColor="crimson"
-                isInvalid={typeof errors.corporateName?.message === "string"}
-                {...register("corporateName")}
-              />
-              <FormErrorMessage>
-                {errors.corporateName && errors.corporateName.message}
-              </FormErrorMessage>
-            </FormControl>
+    <form onSubmit={onSubmit}>
+      <Stack spacing="0.8rem">
+        <Stack spacing="0.2rem" width="sm">
+          {fields.map((field) => (
+            <FormInput
+              key={field.fieldName}
+              {...field}
+              errors={errors}
+              register={register}
+            />
+          ))}
 
-            <FormControl isInvalid={errors.fantasyName?.message !== null}>
-              <FormLabel htmlFor="fantasyName">Nome Fantasia</FormLabel>
-              <Input
-                id="fantasyName"
-                type="text"
-                placeholder="Nome Fantasia"
-                {...register("fantasyName")}
-                errorBorderColor="crimson"
-                isInvalid={typeof errors.fantasyName?.message === "string"}
-              />
-              <FormErrorMessage>
-                {errors.fantasyName && errors.fantasyName.message}
-              </FormErrorMessage>
-            </FormControl>
-
-            <FormControl
-              isInvalid={errors.companyIdentification?.message !== null}
+          <FormControl isInvalid={errors.stateAcronym?.message !== null}>
+            <FormLabel htmlFor="stateId">Estado</FormLabel>
+            <Select
+              id="stateId"
+              placeholder="Selecione um estado"
+              {...register("stateAcronym")}
+              errorBorderColor="crimson"
+              isInvalid={typeof errors.stateAcronym?.message === "string"}
             >
-              <FormLabel htmlFor="companyIdentification">CPF/CNPJ</FormLabel>
-              <Input
-                id="companyIdentification"
-                type="text"
-                placeholder="CPF/CNPJ"
-                {...register("companyIdentification")}
-                errorBorderColor="crimson"
-                isInvalid={
-                  typeof errors.companyIdentification?.message === "string"
-                }
-              />
-              <FormErrorMessage>
-                {errors.companyIdentification &&
-                  errors.companyIdentification.message}
-              </FormErrorMessage>
-            </FormControl>
+              {states.map((state) => (
+                <option key={state.acronym} value={state.acronym}>
+                  {state.acronym}
+                </option>
+              ))}
+            </Select>
+            <FormErrorMessage>
+              {errors.stateAcronym && errors.stateAcronym.message}
+            </FormErrorMessage>
+          </FormControl>
 
-            <FormControl isInvalid={errors.phoneNumber?.message !== null}>
-              <FormLabel htmlFor="phoneNumber">Celular</FormLabel>
-              <Input
-                id="phoneNumber"
-                type="tel"
-                placeholder="Celular"
-                {...register("phoneNumber")}
-                errorBorderColor="crimson"
-                isInvalid={typeof errors.phoneNumber?.message === "string"}
-              />
-              <FormErrorMessage>
-                {errors.phoneNumber && errors.phoneNumber.message}
-              </FormErrorMessage>
-            </FormControl>
-
-            <FormControl isInvalid={errors.stateAcronym?.message !== null}>
-              <FormLabel htmlFor="stateId">Estado</FormLabel>
-              <Select
-                id="stateId"
-                placeholder="Selecione um estado"
-                {...register("stateAcronym")}
-                errorBorderColor="crimson"
-                isInvalid={typeof errors.stateAcronym?.message === "string"}
-              >
-                {states.map((state) => (
-                  <option key={state.acronym} value={state.acronym}>
-                    {state.acronym}
-                  </option>
-                ))}
-              </Select>
-              <FormErrorMessage>
-                {errors.stateAcronym && errors.stateAcronym.message}
-              </FormErrorMessage>
-            </FormControl>
-
-            <FormControl isInvalid={errors.cityIgbeCode?.message !== null}>
-              <FormLabel htmlFor="cityIgbeCode">Cidade</FormLabel>
-              <Select
-                id="cityIgbeCode"
-                placeholder="Selecione uma cidade"
-                {...register("cityIgbeCode")}
-                errorBorderColor="crimson"
-                isInvalid={typeof errors.cityIgbeCode?.message === "string"}
-                disabled={stateFielCurrentValue?.toString().length < 1}
-              >
-                {cities.map((city) => (
-                  <option key={city.codigo_ibge} value={city.codigo_ibge}>
-                    {city.nome}
-                  </option>
-                ))}
-              </Select>
-              <FormErrorMessage>
-                {errors.cityIgbeCode && errors.cityIgbeCode.message}
-              </FormErrorMessage>
-            </FormControl>
-          </Stack>
-          <Button
-            colorScheme="blue"
-            width="sm"
-            type="submit"
-            isDisabled={!isValid}
-          >
-            Atualizar
-          </Button>
+          <FormControl isInvalid={errors.cityIgbeCode?.message !== null}>
+            <FormLabel htmlFor="cityIgbeCode">Cidade</FormLabel>
+            <Select
+              id="cityIgbeCode"
+              placeholder="Selecione uma cidade"
+              {...register("cityIgbeCode")}
+              errorBorderColor="crimson"
+              isInvalid={typeof errors.cityIgbeCode?.message === "string"}
+              disabled={stateFielCurrentValue?.toString().length < 1}
+            >
+              {cities.map((city) => (
+                <option key={city.codigo_ibge} value={city.codigo_ibge}>
+                  {city.nome}
+                </option>
+              ))}
+            </Select>
+            <FormErrorMessage>
+              {errors.cityIgbeCode && errors.cityIgbeCode.message}
+            </FormErrorMessage>
+          </FormControl>
         </Stack>
-      </form>
-    </Body>
+        <Button
+          colorScheme="blue"
+          width="sm"
+          type="submit"
+          isDisabled={!isValid}
+        >
+          Atualizar
+        </Button>
+      </Stack>
+    </form>
+  );
+}
+
+type IPropsFormInput = {
+  fieldName: FieldType["fieldName"];
+  label: FieldType["label"];
+  errors: FieldErrors<FarmerFormType>;
+  register: UseFormRegister<FarmerFormType>;
+};
+
+const theFieldIsWrong = (
+  fieldName: FieldType["fieldName"],
+  errors: IPropsFormInput["errors"]
+) => FarmerHelper.checkIfTheFieldIsWrong(errors[fieldName]?.message);
+
+function FormInput({ label, fieldName, errors, register }: IPropsFormInput) {
+  const fieldIsInvalid = theFieldIsWrong(fieldName, errors);
+
+  return (
+    <FormControl key={fieldName} isInvalid={fieldIsInvalid}>
+      <FormLabel htmlFor={fieldName}>{label}</FormLabel>
+      <Input
+        id={fieldName}
+        type="text"
+        placeholder={label}
+        errorBorderColor="crimson"
+        isInvalid={fieldIsInvalid}
+        {...register(fieldName)}
+      />
+      <FormErrorMessage>
+        {fieldIsInvalid && errors[fieldName]?.message}
+      </FormErrorMessage>
+    </FormControl>
   );
 }
