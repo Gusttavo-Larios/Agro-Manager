@@ -1,16 +1,38 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { FarmerService } from './farmer.service';
 import { CreateFarmerDto } from './dto/create-farmer.dto';
 import { UpdateFarmerDto } from './dto/update-farmer.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthService } from 'src/auth/auth.service';
 
 @UseGuards(AuthGuard)
 @Controller('farmer')
 export class FarmerController {
-  constructor(private readonly farmerService: FarmerService) {}
+  constructor(
+    private readonly farmerService: FarmerService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Post()
-  create(@Body() createFarmerDto: CreateFarmerDto) {
+  async create(
+    @Body() createFarmerDto: CreateFarmerDto,
+    @Request() request: any,
+  ) {
+    const [_, token] = request.headers.authorization.split(' ');
+    const { sub } = await this.authService.getDataFromToken(token);
+    createFarmerDto.created_by = sub;
+    
     return this.farmerService.create(createFarmerDto);
   }
 

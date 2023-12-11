@@ -41,16 +41,16 @@ export class CreateFarmerDto {
     @Type(() => CreateCityDto)
     city: CreateCityDto;
 
-    @IsNumber({
-        maxDecimalPlaces: 0
-    }, {
-        message: "O identificador do criador do cadastro do agricultor dever ser um número."
-    })
-    @IsPositive({
-        message: "O identificador do criador do cadastro do agricultor dever ser um número positivo."
-    })
-    @IsNotEmpty({
-        message: "O identificador do criador do cadastro é requerido."
-    })
+    // @IsNumber({
+    //     maxDecimalPlaces: 0
+    // }, {
+    //     message: "O identificador do criador do cadastro do agricultor dever ser um número."
+    // })
+    // @IsPositive({
+    //     message: "O identificador do criador do cadastro do agricultor dever ser um número positivo."
+    // })
+    // @IsNotEmpty({
+    //     message: "O identificador do criador do cadastro é requerido."
+    // })
     created_by: number
 }
