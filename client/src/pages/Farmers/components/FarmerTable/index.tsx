@@ -90,6 +90,9 @@ function TableRows() {
 }
 
 function TableRow(farmer: FarmerType) {
+  const {
+    deleteFarmerProps: { requestDeleteFarmer },
+  } = useFarmerContext();
   return (
     <Tr>
       <Td>{farmer.corporate_name}</Td>
@@ -117,7 +120,12 @@ function TableRow(farmer: FarmerType) {
             >
               Editar
             </MenuItem>
-            <MenuItem>Excluir</MenuItem>
+            <MenuItem onClick={() => requestDeleteFarmer(farmer.id)}>
+              Excluir
+            </MenuItem>
+            {/* <MenuItem>
+              <AlertConfirmDelete />
+            </MenuItem> */}
           </MenuList>
         </Menu>
       </Td>

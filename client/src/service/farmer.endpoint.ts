@@ -50,4 +50,10 @@ export class FarmerEndpoint {
 
     return response.data;
   }
+
+  static async delete(id: number): Promise<FarmerType> {
+    const response = await api.delete(`farmer/${id}`);
+
+    return response.data;
+  }
 }

@@ -5,6 +5,7 @@ import { FarmerTable } from "./components/FarmerTable";
 import { FarmersContextProvider } from "./context";
 import { NavigateUtil } from "@/utils/navigate.util";
 import { FarmerScreenMode } from "@/enums/farmer.enum";
+import { AlertConfirmDelete } from "./components/AlertConfirmDelete";
 
 export function Farmers() {
   return (
@@ -28,6 +29,7 @@ export function Farmers() {
           <FarmerTable />
         </VStack>
       </Body>
+      <AlertConfirmDelete />
     </FarmersContextProvider>
   );
 }
