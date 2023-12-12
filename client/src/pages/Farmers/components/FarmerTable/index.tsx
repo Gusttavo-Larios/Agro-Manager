@@ -35,11 +35,12 @@ export function FarmerTable() {
   return (
     <TableContainer
       w="100%"
-      minH="md"
+      minH={data?.data.length === 0 || data?.data === undefined ? "md" : "auto"}
+      display={!isLoading && data ? "block" : "flex"}
       py="1rem"
       backgroundColor="gray.200"
       rounded="2rem"
-      display={!isLoading && data ? "block" : "flex"}
+      flexDir={"column"}
       alignItems="center"
       justifyContent="center"
     >
