@@ -1,5 +1,4 @@
-import { ReactNode, createContext, useContext, useState } from "react";
-import useSWR from "swr";
+import { ReactNode, createContext, useContext, useEffect, useState } from "react";
 
 import {
   FarmerEndpoint,
@@ -19,20 +18,31 @@ const FarmersContext = createContext<ContextType>({} as ContextType);
 export function FarmersContextProvider({ children }: { children: ReactNode }) {
   const { handleError } = useHandleError();
 
-  const [page, setPage] = useState(1);
+  const [data, setData] = useState<FarmerGetAllReturnType | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { data, isLoading } = useSWR(`@farmer?page=${page}`, {
-    fetcher: async () => await FarmerEndpoint.getAll(page),
-    onError: (error, _key, _config) =>
+  useEffect(() => {
+    getFarmers(1)
+  },[])
+
+  async function getFarmers(page?:number): Promise<void> {
+    try {
+      setIsLoading(true)
+      const response = await FarmerEndpoint.getAll(page);
+      setData(response);
+    } catch (error: any) {
       handleError({
         error,
         status: "error",
         title: "Não foi possível encontrar registros de agricultores",
-      }),
-  });
+      });
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   function onChangePage(page: number) {
-    setPage(page);
+    getFarmers(page);
   }
 
   return (
@@ -40,7 +50,7 @@ export function FarmersContextProvider({ children }: { children: ReactNode }) {
       value={{
         isLoading,
         onChangePage,
-        data,
+        data
       }}
     >
       {children}
