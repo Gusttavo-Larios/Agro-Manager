@@ -19,7 +19,7 @@ export class AuthService {
   }> {
     const user = await this.administratorRepository.findOne(email);
 
-    if (!user || !bcrypt.compare(pass, user?.password)) {
+    if (!user || !await bcrypt.compare(pass, user?.password)) {
       throw new UnauthorizedException('Usuário ou senha está incorreto.');
     }
 
