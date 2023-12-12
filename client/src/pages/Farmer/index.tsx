@@ -43,14 +43,31 @@ function Page() {
 
 type FieldType = {
   label: string;
+  placeholder: string;
   fieldName: keyof FarmerFormType;
 };
 
 const fields: Array<FieldType> = [
-  { label: "Razão Social", fieldName: "corporateName" },
-  { label: "Nome Fantasia", fieldName: "fantasyName" },
-  { label: "CPF/CNPJ", fieldName: "companyIdentification" },
-  { label: "Celular", fieldName: "phoneNumber" },
+  {
+    label: "Razão Social *",
+    fieldName: "corporateName",
+    placeholder: "Razão Social",
+  },
+  {
+    label: "Nome Fantasia *",
+    fieldName: "fantasyName",
+    placeholder: "Nome Fantasia",
+  },
+  {
+    label: "CPF/CNPJ *",
+    fieldName: "companyIdentification",
+    placeholder: "999.999.999-99 / 99.999.999/9999-99",
+  },
+  {
+    label: "Celular *",
+    fieldName: "phoneNumber",
+    placeholder: "(99) 9 9999-9999",
+  },
 ];
 
 function Form() {
@@ -69,6 +86,7 @@ function Form() {
   });
 
   const stateFielCurrentValue = watch("stateAcronym");
+  const cityFielCurrentValue = watch("cityIgbeCode");
 
   useEffect(() => {
     if (stateFielCurrentValue) getCities(stateFielCurrentValue);
@@ -91,14 +109,14 @@ function Form() {
             />
           ))}
 
-          <FormControl isInvalid={errors.stateAcronym?.message !== null}>
-            <FormLabel htmlFor="stateId">Estado</FormLabel>
+          <FormControl isInvalid={theFieldIsWrong("stateAcronym", errors)}>
+            <FormLabel htmlFor="stateId">Estado *</FormLabel>
             <Select
               id="stateId"
               placeholder="Selecione um estado"
               {...register("stateAcronym")}
               errorBorderColor="crimson"
-              isInvalid={typeof errors.stateAcronym?.message === "string"}
+              isInvalid={theFieldIsWrong("stateAcronym", errors)}
             >
               {states.map((state) => (
                 <option key={state.acronym} value={state.acronym}>
@@ -107,28 +125,34 @@ function Form() {
               ))}
             </Select>
             <FormErrorMessage>
-              {errors.stateAcronym && errors.stateAcronym.message}
+              {theFieldIsWrong("stateAcronym", errors) &&
+                errors?.stateAcronym?.message}
             </FormErrorMessage>
           </FormControl>
 
-          <FormControl isInvalid={errors.cityIgbeCode?.message !== null}>
-            <FormLabel htmlFor="cityIgbeCode">Cidade</FormLabel>
+          <FormControl isInvalid={theFieldIsWrong("cityIgbeCode", errors)}>
+            <FormLabel htmlFor="cityIgbeCode">Cidade *</FormLabel>
             <Select
               id="cityIgbeCode"
               placeholder="Selecione uma cidade"
               {...register("cityIgbeCode")}
               errorBorderColor="crimson"
-              isInvalid={typeof errors.cityIgbeCode?.message === "string"}
+              isInvalid={theFieldIsWrong("cityIgbeCode", errors)}
               disabled={stateFielCurrentValue?.toString().length < 1}
             >
               {cities.map((city) => (
-                <option key={city.codigo_ibge} value={city.codigo_ibge}>
+                <option
+                  key={city.codigo_ibge}
+                  value={city.codigo_ibge}
+                  selected={cityFielCurrentValue === city.codigo_ibge}
+                >
                   {city.nome}
                 </option>
               ))}
             </Select>
             <FormErrorMessage>
-              {errors.cityIgbeCode && errors.cityIgbeCode.message}
+              {theFieldIsWrong("cityIgbeCode", errors) &&
+                errors?.cityIgbeCode?.message}
             </FormErrorMessage>
           </FormControl>
         </Stack>
@@ -150,16 +174,18 @@ function Form() {
 type IPropsFormInput = {
   fieldName: FieldType["fieldName"];
   label: FieldType["label"];
+  placeholder: FieldType["placeholder"];
   errors: FieldErrors<FarmerFormType>;
   register: UseFormRegister<FarmerFormType>;
 };
 
-const theFieldIsWrong = (
-  fieldName: FieldType["fieldName"],
-  errors: IPropsFormInput["errors"]
-) => FarmerHelper.checkIfTheFieldIsWrong(errors[fieldName]?.message);
-
-function FormInput({ label, fieldName, errors, register }: IPropsFormInput) {
+function FormInput({
+  label,
+  fieldName,
+  errors,
+  register,
+  placeholder,
+}: IPropsFormInput) {
   const fieldIsInvalid = theFieldIsWrong(fieldName, errors);
 
   return (
@@ -168,7 +194,7 @@ function FormInput({ label, fieldName, errors, register }: IPropsFormInput) {
       <Input
         id={fieldName}
         type="text"
-        placeholder={label}
+        placeholder={placeholder}
         errorBorderColor="crimson"
         isInvalid={fieldIsInvalid}
         {...register(fieldName)}
@@ -179,3 +205,8 @@ function FormInput({ label, fieldName, errors, register }: IPropsFormInput) {
     </FormControl>
   );
 }
+
+const theFieldIsWrong = (
+  fieldName: FieldType["fieldName"],
+  errors: IPropsFormInput["errors"]
+) => FarmerHelper.checkIfTheFieldIsWrong(errors[fieldName]?.message);
