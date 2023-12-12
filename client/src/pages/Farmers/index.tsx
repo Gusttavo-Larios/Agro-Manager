@@ -14,7 +14,7 @@ export function Farmers() {
       <ContextAlertConfirmationDeleteProvider>
         <Body>
           <VStack w="full" px="1rem" alignItems="flex-end" spacing="1rem">
-            <HStack w="full" justifyContent="space-between" alignItems="center">
+            <HStack w="full" justifyContent="space-between" alignItems="center" wrap={"wrap"}>
               <Heading>Agricultores</Heading>
               <Button
                 colorScheme="blue"

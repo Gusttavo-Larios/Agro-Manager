@@ -13,13 +13,15 @@ import {
 import { FieldErrors, UseFormRegister, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
+import { FarmerScreenMode } from "@/enums/farmer.enum";
+
+import { breakPoints } from "@/style/config.style";
 import { Body } from "@/components/Body";
 
 import { FarmerContextProvider, useFarmerContext } from "./context";
 import { CreateOrUpdateFarmerSchema } from "./schema";
 import { FarmerFormType } from "./type";
 import { FarmerHelper } from "./helper";
-import { FarmerScreenMode } from "@/enums/farmer.enum";
 
 export function Farmer(): JSX.Element {
   return (
@@ -89,7 +91,8 @@ function Form() {
   const cityFielCurrentValue = watch("cityIgbeCode");
 
   const stateFieldIsDisabled = states.length < 1;
-  const cityFieldIsDisabled = stateFielCurrentValue?.toString().length < 1 || cities.length < 1;
+  const cityFieldIsDisabled =
+    stateFielCurrentValue?.toString().length < 1 || cities.length < 1;
 
   useEffect(() => {
     if (stateFielCurrentValue) getCities(stateFielCurrentValue);
@@ -102,7 +105,7 @@ function Form() {
   return (
     <form onSubmit={onSubmit}>
       <Stack spacing="0.8rem">
-        <Stack spacing="0.2rem" width="sm">
+        <Stack spacing="0.2rem">
           {fields.map((field) => (
             <FormInput
               key={field.fieldName}
@@ -112,7 +115,10 @@ function Form() {
             />
           ))}
 
-          <FormControl isInvalid={theFieldIsWrong("stateAcronym", errors)}>
+          <FormControl
+            isInvalid={theFieldIsWrong("stateAcronym", errors)}
+            width={breakPoints}
+          >
             <FormLabel htmlFor="stateId">Estado *</FormLabel>
             <Select
               id="stateId"
@@ -134,7 +140,10 @@ function Form() {
             </FormErrorMessage>
           </FormControl>
 
-          <FormControl isInvalid={theFieldIsWrong("cityIgbeCode", errors)}>
+          <FormControl
+            isInvalid={theFieldIsWrong("cityIgbeCode", errors)}
+            width={breakPoints}
+          >
             <FormLabel htmlFor="cityIgbeCode">Cidade *</FormLabel>
             <Select
               id="cityIgbeCode"
@@ -162,9 +171,9 @@ function Form() {
         </Stack>
         <Button
           colorScheme={FORM_MODE === FarmerScreenMode.CREATE ? "green" : "blue"}
-          width="sm"
           type="submit"
           isDisabled={!isValid}
+          width={breakPoints}
         >
           {FORM_MODE === FarmerScreenMode.CREATE
             ? "Criar Agricultor"

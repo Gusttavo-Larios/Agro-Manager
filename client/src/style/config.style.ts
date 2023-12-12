@@ -1,0 +1,1 @@
+export const breakPoints = ["2xs", "sm", "md"];

@@ -137,7 +137,7 @@ function TableRow(farmer: FarmerType) {
 function Footer() {
   const { data, onChangePage } = useFarmerContext();
   return (
-    <HStack w="full" px="1rem" py="1rem" justifyContent="space-between">
+    <HStack w="full" px="1rem" py="1rem" justifyContent="space-between" wrap={"wrap"}>
       <Text fontWeight="700">
         Página {data?.currentPage} de {data?.totalPages}
       </Text>

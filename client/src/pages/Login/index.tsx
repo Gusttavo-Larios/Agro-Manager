@@ -8,10 +8,13 @@ import {
   Stack,
   VStack,
 } from "@chakra-ui/react";
-
-import IconLarge from "@/assets/imgs/ICON_LARGE.svg";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+
+import { breakPoints } from "@/style/config.style";
+
+import IconLarge from "@/assets/imgs/ICON_LARGE.svg";
+
 import { SignupSchema } from "./schema";
 import { useLogic } from "./logic";
 
@@ -37,11 +40,14 @@ export function Login(): JSX.Element {
 
   return (
     <VStack spacing="4rem">
-      <Image src={IconLarge} mt="8rem" width="20rem" />
+      <Image src={IconLarge} mt="8rem" width={breakPoints} />
       <form onSubmit={onSubmit}>
         <Stack spacing="1rem">
-          <Stack spacing="0.8rem" width="sm">
-            <FormControl isInvalid={errors.email?.message !== null}>
+          <Stack spacing="0.8rem">
+            <FormControl
+              isInvalid={errors.email?.message !== null}
+              width={breakPoints}
+            >
               <FormLabel htmlFor="email">E-mail</FormLabel>
               <Input
                 id="email"
@@ -56,7 +62,10 @@ export function Login(): JSX.Element {
               </FormErrorMessage>
             </FormControl>
 
-            <FormControl isInvalid={errors.password?.message !== null}>
+            <FormControl
+              isInvalid={errors.password?.message !== null}
+              width={breakPoints}
+            >
               <FormLabel htmlFor="password">Senha</FormLabel>
               <Input
                 id="password"
@@ -71,7 +80,7 @@ export function Login(): JSX.Element {
               </FormErrorMessage>
             </FormControl>
           </Stack>
-          <Button colorScheme="blue" width="sm" type="submit">
+          <Button colorScheme="blue" type="submit" width={breakPoints}>
             Entrar
           </Button>
         </Stack>
