@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+
+  db:
+    image: mysql
+    container_name: db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: agromanager
+      MYSQL_PASSWORD: root
+    networks:
+      - agromanager
+    ports:
+      - 3306:3306
+
+  client:
+    image: client:latest
+    restart: unless-stopped
+    container_name: full_agro_manager_client
+    working_dir: /var/www/client
+    volumes:
+      - ./client:/var/www/client
+    depends_on:
+      - api
+    networks:
+      - agromanager
+    ports:
+      - 5173:5173
+
+  api:
+    image: api
+    container_name: full_agro_manager_api
+    env_file:
+      - ./api/.env.container
+    restart: unless-stopped
+    working_dir: /var/www/api
+    volumes:
+      - ./api:/var/www/api
+    depends_on:
+      - db
+    command: sh -c "npx prisma migrate dev && npx prisma db seed && npm run start:dev"
+    networks:
+      - agromanager
+    ports:
+      - 3000:3000
+
+networks:
+  agromanager:
+    driver: bridge

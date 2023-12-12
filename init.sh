@@ -1,0 +1,1 @@
+cd ./api && docker build -t api . && cd ../client && docker build -t client . && cd ../ && docker compose up -d

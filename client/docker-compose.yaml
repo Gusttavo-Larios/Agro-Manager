@@ -1,0 +1,9 @@
+version: "3.8"
+
+services:
+
+ client:
+   image: client:latest
+   container_name: agro_manager_client
+   ports:
+     - 5173:5173
