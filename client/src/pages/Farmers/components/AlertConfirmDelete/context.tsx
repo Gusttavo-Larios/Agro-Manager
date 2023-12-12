@@ -1,9 +1,9 @@
 import React, { ReactNode, createContext, useContext, useState } from "react";
 import { AlertDialogProps, useDisclosure, useToast } from "@chakra-ui/react";
-import { AxiosError } from "axios";
 
 import { FarmerType } from "@/types/farmer.type";
 import { FarmerEndpoint } from "@/service/farmer.endpoint";
+import { useHandleError } from "@/hooks/handleError.hook";
 
 import { useFarmerContext } from "../../context";
 
@@ -27,6 +27,8 @@ export function ContextAlertConfirmationDeleteProvider({
 }) {
   const { data, onChangePage } = useFarmerContext();
 
+  const { handleError } = useHandleError();
+
   const toast = useToast();
 
   const [farmerId, setFarmerId] = useState<FarmerType["id"] | null>(null);
@@ -49,12 +51,11 @@ export function ContextAlertConfirmationDeleteProvider({
         throw new Error(
           "É necessário escolher um cadastro para efeturar a exclusão."
         );
+      onClose();  
 
       await FarmerEndpoint.delete(farmerId);
 
       setFarmerId(null);
-
-      onClose();
 
       toast({
         title: "O cadastro do Agricultor foi excluído com sucesso",
@@ -67,19 +68,10 @@ export function ContextAlertConfirmationDeleteProvider({
 
       onChangePage(1);
     } catch (error: any) {
-      let errorMessage = error.message;
-
-      if (error instanceof AxiosError) {
-        errorMessage = error.response?.data.message;
-      }
-
-      toast({
-        title: "Não foi possível excluir o cadastro do agricultor",
-        description: errorMessage,
+      handleError({
+        error,
         status: "error",
-        duration: 9000,
-        isClosable: true,
-        position: "top-right",
+        title: "Não foi possível excluir o cadastro do agricultor",
       });
     }
   }

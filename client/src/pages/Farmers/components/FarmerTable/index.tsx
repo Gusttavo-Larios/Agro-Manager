@@ -14,6 +14,7 @@ import {
   TableContainer,
   Text,
   Image,
+  Spinner,
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 
@@ -29,7 +30,7 @@ import { useFarmerContext } from "../../context";
 import { headers } from "./data";
 
 export function FarmerTable() {
-  const { data } = useFarmerContext();
+  const { data, isLoading } = useFarmerContext();
 
   return (
     <TableContainer
@@ -38,11 +39,17 @@ export function FarmerTable() {
       py="1rem"
       backgroundColor="gray.200"
       rounded="2rem"
-      display={data ? "block" : "flex"}
+      display={!isLoading && data ? "block" : "flex"}
       alignItems="center"
       justifyContent="center"
     >
-      {data?.data ? <Table /> : <NotFoundFarmers />}
+      {isLoading ? (
+        <Spinner size="xl" color="gray.500" />
+      ) : data?.data ? (
+        <Table />
+      ) : (
+        <NotFoundFarmers />
+      )}
     </TableContainer>
   );
 }

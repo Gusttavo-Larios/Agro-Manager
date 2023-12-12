@@ -1,13 +1,15 @@
-import { ReactNode, createContext, useContext, useEffect, useState } from "react";
-import { useToast } from "@chakra-ui/react";
-import { AxiosError } from "axios";
+import { ReactNode, createContext, useContext, useState } from "react";
+import useSWR from "swr";
 
 import {
   FarmerEndpoint,
   FarmerGetAllReturnType,
 } from "@/service/farmer.endpoint";
 
+import { useHandleError } from "@/hooks/handleError.hook";
+
 type ContextType = {
+  isLoading: boolean;
   data?: FarmerGetAllReturnType | null;
   onChangePage(page: number): void;
 };
@@ -15,43 +17,28 @@ type ContextType = {
 const FarmersContext = createContext<ContextType>({} as ContextType);
 
 export function FarmersContextProvider({ children }: { children: ReactNode }) {
-  const toast = useToast();
+  const { handleError } = useHandleError();
 
-  const [data, setData] = useState<ContextType["data"] | null>(null);
+  const [page, setPage] = useState(1);
 
-  useEffect(() => {
-    getFarmes();
-  }, []);
-
-  async function getFarmes(page?: number) {
-    try {
-      const farmers = await FarmerEndpoint.getAll(page);
-      setData(farmers);
-    } catch (error: any) {
-      let errorMessage = error.message;
-
-      if (error instanceof AxiosError) {
-        errorMessage = error.response?.data.message;
-      }
-
-      toast({
-        title: "Não foi possível encontrar registros de agricultores",
-        description: errorMessage,
+  const { data, isLoading } = useSWR(`@farmer?page=${page}`, {
+    fetcher: async () => await FarmerEndpoint.getAll(page),
+    onError: (error, _key, _config) =>
+      handleError({
+        error,
         status: "error",
-        duration: 9000,
-        isClosable: true,
-        position: "top-right",
-      });
-    }
-  }
+        title: "Não foi possível encontrar registros de agricultores",
+      }),
+  });
 
   function onChangePage(page: number) {
-    getFarmes(page)
+    setPage(page);
   }
 
   return (
     <FarmersContext.Provider
       value={{
+        isLoading,
         onChangePage,
         data,
       }}
