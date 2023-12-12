@@ -5,20 +5,20 @@ import {
   useEffect,
   useState,
 } from "react";
+import { useToast } from "@chakra-ui/react";
 import { useLocation, useParams } from "react-router-dom";
 
+import { StateType } from "@/types/state.type";
+import { CityServiceType } from "@/types/city.type";
+import { FarmerScreenMode } from "@/enums/farmer.enum";
 import { StateEndpoint } from "@/service/state.endpoint";
 import { CityEndpoint } from "@/service/city.endpoint";
+import { NavigateUtil } from "@/utils/navigate.util";
 import { FarmerEndpoint } from "@/service/farmer.endpoint";
-
-import { CityServiceType } from "@/types/city.type";
-import { StateType } from "@/types/state.type";
-import { router } from "@/router";
+import { useHandleError } from "@/hooks/handleError.hook";
 
 import { FarmerFormType } from "./type";
-import { FarmerScreenMode } from "@/enums/farmer.enum";
-import { useToast } from "@chakra-ui/react";
-import { AxiosError } from "axios";
+import { INITIAL_VALUES } from "./data";
 
 type ContextType = {
   FORM_MODE: keyof typeof FarmerScreenMode;
@@ -34,6 +34,7 @@ const FarmerContext = createContext<ContextType>({} as ContextType);
 export function FarmerContextProvider({ children }: { children: ReactNode }) {
   const params = useParams();
   const location = useLocation();
+  const { handleError } = useHandleError();
 
   const toast = useToast();
 
@@ -52,7 +53,8 @@ export function FarmerContextProvider({ children }: { children: ReactNode }) {
       isClosable: true,
       position: "top-right",
     });
-    router.navigate("/agricultores");
+
+    NavigateUtil.navigateTo("/agricultores");
   }
 
   useEffect(() => {
@@ -64,8 +66,14 @@ export function FarmerContextProvider({ children }: { children: ReactNode }) {
       const states = await StateEndpoint.getAll();
 
       setStates(states);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      handleError({
+        error,
+        status: "error",
+        title: "Não foi possível obter os estados",
+      });
+
+      NavigateUtil.navigateTo("/agricultores");
     }
   }
 
@@ -75,40 +83,26 @@ export function FarmerContextProvider({ children }: { children: ReactNode }) {
 
       setCities(cities);
     } catch (error) {
-      console.log(error);
+      handleError({
+        error,
+        status: "error",
+        title: "Não foi possível obter as cidades",
+      });
     }
   }
 
   const getFormInitialValues = async () => {
-    if (FORM_MODE === FarmerScreenMode.CREATE)
-      return {
-        corporateName: "",
-        fantasyName: "",
-        companyIdentification: "",
-        phoneNumber: "",
-        stateAcronym: "",
-        cityIgbeCode: "",
-      };
+    if (FORM_MODE === FarmerScreenMode.CREATE) return INITIAL_VALUES.farmerForm;
 
     const farmer = await FarmerEndpoint.get(Number(params.farmerId));
 
-    if (!farmer)
-      return {
-        corporateName: "",
-        fantasyName: "",
-        companyIdentification: "",
-        phoneNumber: "",
-        stateAcronym: "",
-        cityIgbeCode: "",
-      };
-
     return {
-      corporateName: farmer.corporate_name,
-      fantasyName: farmer.fantasy_name,
-      companyIdentification: farmer.company_identification,
-      phoneNumber: farmer.phone_number,
-      stateAcronym: farmer.city?.state?.acronym as string,
-      cityIgbeCode: farmer.city?.ibge_code as string,
+      corporateName: farmer?.corporate_name,
+      fantasyName: farmer?.fantasy_name,
+      companyIdentification: farmer?.company_identification,
+      phoneNumber: farmer?.phone_number,
+      stateAcronym: farmer?.city?.state?.acronym as string,
+      cityIgbeCode: farmer?.city?.ibge_code as string,
     };
   };
 
@@ -142,21 +136,12 @@ export function FarmerContextProvider({ children }: { children: ReactNode }) {
         position: "top-right",
       });
 
-      router.navigate("/agricultores");
+      NavigateUtil.navigateTo("/agricultores");
     } catch (error: any) {
-      let errorMessage = error.message;
-
-      if (error instanceof AxiosError) {
-        errorMessage = error.response?.data.message;
-      }
-
-      toast({
-        title: "Não foi possível atualizar o cadastro",
-        description: errorMessage,
+      handleError({
+        error,
         status: "error",
-        duration: 9000,
-        isClosable: true,
-        position: "top-right",
+        title: "Não foi possível atualizar o cadastro",
       });
     }
   }
@@ -191,21 +176,12 @@ export function FarmerContextProvider({ children }: { children: ReactNode }) {
         position: "top-right",
       });
 
-      router.navigate("/agricultores");
+      NavigateUtil.navigateTo("/agricultores");
     } catch (error: any) {
-      let errorMessage = error.message;
-
-      if (error instanceof AxiosError) {
-        errorMessage = error.response?.data.message;
-      }
-
-      toast({
-        title: "Não foi possível realizar o cadastro",
-        description: errorMessage,
+      handleError({
+        error,
         status: "error",
-        duration: 9000,
-        isClosable: true,
-        position: "top-right",
+        title: "Não foi possível realizar o cadastro",
       });
     }
   }
