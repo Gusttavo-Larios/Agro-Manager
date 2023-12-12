@@ -88,6 +88,9 @@ function Form() {
   const stateFielCurrentValue = watch("stateAcronym");
   const cityFielCurrentValue = watch("cityIgbeCode");
 
+  const stateFieldIsDisabled = states.length < 1;
+  const cityFieldIsDisabled = stateFielCurrentValue?.toString().length < 1 || cities.length < 1;
+
   useEffect(() => {
     if (stateFielCurrentValue) getCities(stateFielCurrentValue);
   }, [stateFielCurrentValue]);
@@ -117,6 +120,7 @@ function Form() {
               {...register("stateAcronym")}
               errorBorderColor="crimson"
               isInvalid={theFieldIsWrong("stateAcronym", errors)}
+              disabled={stateFieldIsDisabled}
             >
               {states.map((state) => (
                 <option key={state.acronym} value={state.acronym}>
@@ -138,7 +142,7 @@ function Form() {
               {...register("cityIgbeCode")}
               errorBorderColor="crimson"
               isInvalid={theFieldIsWrong("cityIgbeCode", errors)}
-              disabled={stateFielCurrentValue?.toString().length < 1}
+              disabled={cityFieldIsDisabled}
             >
               {cities.map((city) => (
                 <option
